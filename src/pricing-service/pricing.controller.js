@@ -4,9 +4,14 @@ const {PRICING_STRATEGIES, FIXED_STRATEGY_COST, FLEXI_SCHEMA,
 
 
 const computeCost = (req, res) =>{
-  const {strategy} = req.query;
-  const {routeId, start, end} = req.params;
-  if (!ROUTES.includes(start) || !ROUTES.includes(end) || (start === end)){
+  
+  const {routeId, start, end} = req.params;  
+  const currentRoute = findRoute(Number(routeId)) //ROUTES[newRouteId].path //[routeId -1]
+  console.log('ffff',currentRoute)
+  const strategy = currentRoute.strategy;
+  console.log(strategy)
+  console.log('path...',currentRoute.path)
+  if (!currentRoute.path.includes(start) || !currentRoute.path.includes(end) || (start === end)){
     return res.status(400).json('Invalid routes sent')
   }
   if(strategy == PRICING_STRATEGIES.FIXED){
@@ -16,7 +21,7 @@ const computeCost = (req, res) =>{
   }
   else if(strategy === PRICING_STRATEGIES.FLEXI){
     
-    let distanceTravelled =  ROUTES.indexOf(end) - ROUTES.indexOf(start)
+    let distanceTravelled =  currentRoute.path.indexOf(end) - currentRoute.path.indexOf(start)
     if(distanceTravelled < 1) return res.status(200).json('There is an issue with the routes data')
     const latestFlexiConfig = FLEXI_SCHEMA[FLEXI_SCHEMA.length-1];
     distanceTravelled =  distanceConverter(latestFlexiConfig.unit, distanceTravelled + 1) 
@@ -37,11 +42,26 @@ const computeCost = (req, res) =>{
 
   }
   else{
-    // throw new Error('Pricing strategy not supported')
     return res.status(400).json('Pricing strategy not supported')
   }
 }
 
+
+
+const configurePricing = (req, res)=> {
+  const {strategy} = ROUTES.strategy;
+  if(strategy == PRICING_STRATEGIES.FIXED){
+  }
+  else if(strategy === PRICING_STRATEGIES.FLEXI){
+    FLEXI_SCHEMA.push(req.body)
+    return res.status(400).json(FLEXI_SCHEMA) 
+  }else if(strategy === PRICING_STRATEGIES.MODULAR){
+    MODULAR_ROUTES_PRICING.push(req.body)
+  }
+  else{
+    return res.status(400).json('Pricing strategy not supported')
+  }
+}
 
 const distanceConverter = (unit, distance) => {
   if(unit === 'km') {
@@ -58,6 +78,19 @@ const distanceConverter = (unit, distance) => {
   }
 }
 
+const findRoute = (routeId ) => {
+  let route = {}
+   ROUTES.map(element =>{
+    if(element.id === routeId){
+      route =  element;
+      return;
+
+    }
+  } )
+  console.log('route....', route);
+  return route
+}
+
 module.exports = {
-  computeCost
+  computeCost, configurePricing
 }
