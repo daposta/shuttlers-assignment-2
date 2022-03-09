@@ -4,8 +4,8 @@ const {PRICING_STRATEGIES, FIXED_STRATEGY_COST, FLEXI_SCHEMA,
 const { findRoute, findStrategy, distanceConverter}  = require('./pricing.utils');
 
 
-const computeCost = (req, res) =>{
-  console.log(req.params);
+const computeCost = async(req, res) =>{
+
   const {routeId, start, end} = req.params;  
   const currentRoute = findRoute(Number(routeId)) //ROUTES[newRouteId].path //[routeId -1]
 
@@ -48,7 +48,7 @@ const computeCost = (req, res) =>{
 
 
 
-const configureRouteStrategy = (req, res)=> {
+const configureRouteStrategy = async(req, res)=> {
   const {routeId} = req.params; 
   const {configuration} = req.body;
  
