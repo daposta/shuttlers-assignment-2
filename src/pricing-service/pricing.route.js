@@ -1,10 +1,10 @@
 const express = require('express');
-const { computeCost, configurePricing } = require('./pricing.controller');
+const { computeCost, configureRouteStrategy } = require('./pricing.controller');
 const router = express.Router();
 
 router.get('/pricingCost/:routeId/:start/:end', computeCost)
 
-router.post('/configurePricing/:routeId', configurePricing)
+router.post('/configureRouteStrategy/:routeId', configureRouteStrategy)
 
 
 module.exports = router;

@@ -1,6 +1,6 @@
-const PRICING_STRATEGIES = {'FIXED':'FIXED', 'FLEXI': 'FLEXI', 'MODULAR': 'MODULAR'}
+const PRICING_STRATEGIES = [{'name':'FIXED'}, {'name': 'FLEXI'}, {'name': 'MODULAR'}]
 const ROUTES = [ 
- {'id':1,'path':['A', 'B', 'C', 'D', 'E', 'F', 'G'], 'strategy': PRICING_STRATEGIES.FLEXI }
+ {'id':1,'path':['A', 'B', 'C', 'D', 'E', 'F', 'G'], 'strategy': 'FLEXI' }
 ]
 const FIXED_STRATEGY_COST = 100
 const FLEXI_SCHEMA = [
