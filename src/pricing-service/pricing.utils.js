@@ -24,7 +24,21 @@ const findRoute = (routeId ) => {
   return route
 }
 
+const distanceConverter = (unit, distance) => {
+  if(unit === 'km') {
+    return distance
+  }
+  else{
+    if(unit === 'm'){
+      const convertedDistance = (distance * 1000);
+      return convertedDistance
+    }
+    else{
+      return 0
+    }
+  }
+}
 
 module.exports = {
-  findStrategy, findRoute 
+  findStrategy, findRoute, distanceConverter
 }

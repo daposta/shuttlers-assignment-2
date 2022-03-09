@@ -1,17 +1,16 @@
 const {PRICING_STRATEGIES, FIXED_STRATEGY_COST, FLEXI_SCHEMA,
    ROUTES , MODULAR_ROUTES_PRICING} = require('./pricing.dto')
 
-const { findRoute, findStrategy}  = require('./pricing.utils');
+const { findRoute, findStrategy, distanceConverter}  = require('./pricing.utils');
 
 
 const computeCost = (req, res) =>{
-  
+  console.log(req.params);
   const {routeId, start, end} = req.params;  
   const currentRoute = findRoute(Number(routeId)) //ROUTES[newRouteId].path //[routeId -1]
-  console.log('ffff',currentRoute)
-  const strategy = currentRoute.strategy;
-  console.log(strategy)
 
+  if(!currentRoute) return res.status(400).json('Invalid route')
+  const strategy = currentRoute.strategy;
   if (!currentRoute.path.includes(start) || !currentRoute.path.includes(end) || (start === end)){
     return res.status(400).json('Invalid routes sent')
   }
@@ -52,29 +51,20 @@ const computeCost = (req, res) =>{
 const configureRouteStrategy = (req, res)=> {
   const {routeId} = req.params; 
   const {configuration} = req.body;
+ 
+  const currentRoute = findRoute(Number(routeId)) 
+
+  if(!currentRoute) return res.status(400).json('Invalid route')
   const strategy = findStrategy(configuration)
   if(!strategy){
-    return res.status(400).json('Pricing strategy not supported')
+    return res.status(400).json('Pricing strategy not supported. Options: FIXED|FLEXI|MODULAR')
   }
   const route = findRoute(Number(routeId))
   route.strategy = strategy
   res.status(200).json(route)
 }
 
-const distanceConverter = (unit, distance) => {
-  if(unit === 'km') {
-    return distance
-  }
-  else{
-    if(unit === 'm'){
-      const convertedDistance = (distance * 1000);
-      return convertedDistance
-    }
-    else{
-      return 0
-    }
-  }
-}
+
 
 
 module.exports = {
